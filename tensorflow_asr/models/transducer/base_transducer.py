@@ -421,7 +421,7 @@ class Transducer(BaseModel):
 
     # -------------------------------- GREEDY -------------------------------------
 
-    @tf.function
+    @tf.function(reduce_retracing=True)
     def recognize(
         self,
         inputs: Dict[str, tf.Tensor],
@@ -534,7 +534,8 @@ class Transducer(BaseModel):
             )
 
             decoded = math_util.pad_prediction_tfarray(decoded, blank=self.text_featurizer.blank)
-            return self.text_featurizer.iextract(decoded.stack())
+            return decoded.stack()
+            # return self.text_featurizer.iextract(decoded.stack())
 
     def _perform_greedy(
         self,
@@ -669,7 +670,7 @@ class Transducer(BaseModel):
 
     # -------------------------------- BEAM SEARCH -------------------------------------
 
-    @tf.function
+    @tf.function(reduce_retracing=True)
     def recognize_beam(
         self,
         inputs: Dict[str, tf.Tensor],
@@ -735,7 +736,8 @@ class Transducer(BaseModel):
             )
 
             decoded = math_util.pad_prediction_tfarray(decoded, blank=self.text_featurizer.blank)
-            return self.text_featurizer.iextract(decoded.stack())
+            return decoded.stack()
+            # return self.text_featurizer.iextract(decoded.stack())
 
     def _perform_beam_search(
         self,
